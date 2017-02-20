@@ -1,11 +1,18 @@
-from lib.pybitcointools import bitcoin as btctools
+try:
+    import bitcoin as btctools
+except ImportError:
+    from lib.pybitcointools import bitcoin as btctools
+
+try:
+    import pyelliptic
+except ImportError:
+    from lib import pyelliptic
 import hashlib
 
 ecc_cache = {}
 
 
 def encrypt(data, pubkey, ephemcurve=None, ciphername='aes-256-cbc'):
-    from lib import pyelliptic
     curve, pubkey_x, pubkey_y, i = pyelliptic.ECC._decode_pubkey(pubkey)
     if ephemcurve is None:
         ephemcurve = curve
@@ -28,7 +35,6 @@ def split(encrypted):
 
 
 def getEcc(privatekey=None):
-    from lib import pyelliptic
     global eccs
     if privatekey not in ecc_cache:
         if privatekey:

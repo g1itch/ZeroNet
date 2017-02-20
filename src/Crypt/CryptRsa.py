@@ -1,9 +1,16 @@
 import base64
 import hashlib
 
-def sign(data, privatekey):
+import logging
+
+try:
+    import rsa
+except ImportError:
+    logging.info("No system rsa, importing bundled")
     from lib import rsa
-    from lib.rsa import pkcs1
+
+
+def sign(data, privatekey):
 
     if "BEGIN RSA PRIVATE KEY" not in privatekey:
         privatekey = "-----BEGIN RSA PRIVATE KEY-----\n%s\n-----END RSA PRIVATE KEY-----" % privatekey
@@ -13,19 +20,15 @@ def sign(data, privatekey):
     return sign
 
 def verify(data, publickey, sign):
-    from lib import rsa
-    from lib.rsa import pkcs1
 
     pub = rsa.PublicKey.load_pkcs1(publickey, format="DER")
     try:
         valid = rsa.pkcs1.verify(data, sign, pub)
-    except pkcs1.VerificationError:
+    except rsa.pkcs1.VerificationError:
         valid = False
     return valid
 
 def privatekeyToPublickey(privatekey):
-    from lib import rsa
-    from lib.rsa import pkcs1
 
     if "BEGIN RSA PRIVATE KEY" not in privatekey:
         privatekey = "-----BEGIN RSA PRIVATE KEY-----\n%s\n-----END RSA PRIVATE KEY-----" % privatekey

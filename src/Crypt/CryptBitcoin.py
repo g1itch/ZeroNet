@@ -1,7 +1,11 @@
 import logging
 
 from lib.BitcoinECC import BitcoinECC
-from lib.pybitcointools import bitcoin as btctools
+try:
+    import bitcoin as btctools
+except ImportError:
+    logging.info("No system pybitcointools, importing bundled")
+    from lib.pybitcointools import bitcoin as btctools
 from Config import config
 
 # Try to load openssl

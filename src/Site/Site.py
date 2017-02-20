@@ -16,7 +16,11 @@ import gevent.pool
 
 import util
 from lib import bencode
-from lib.subtl.subtl import UdpTrackerClient
+try:
+    from subtl import UdpTrackerClient
+except ImportError:
+    logging.info("No system subtl, importing bundled")
+    from lib.subtl.subtl import UdpTrackerClient
 from Config import config
 from Peer import Peer
 from Worker import WorkerManager

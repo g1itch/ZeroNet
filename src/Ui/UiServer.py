@@ -7,7 +7,12 @@ import gevent
 
 from gevent.pywsgi import WSGIServer
 from gevent.pywsgi import WSGIHandler
-from lib.geventwebsocket.handler import WebSocketHandler
+
+try:
+    from geventwebsocket.handler import WebSocketHandler
+except ImportError:
+    logging.info("No system geventwebsocket, importing bundled")
+    from lib.geventwebsocket.handler import WebSocketHandler
 
 from UiRequest import UiRequest
 from Site import SiteManager

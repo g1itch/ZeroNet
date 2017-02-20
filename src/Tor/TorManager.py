@@ -13,7 +13,12 @@ import atexit
 from Config import config
 from Crypt import CryptRsa
 from Site import SiteManager
-from lib.PySocks import socks
+
+try:
+    import socks
+except ImportError:
+    logging.info("No system PySocks, importing bundled")
+    from lib.PySocks import socks
 try:
     from gevent.coros import RLock
 except:
@@ -61,7 +66,6 @@ class TorManager:
                 self.log.debug("Tor proxy port %s check error: %s" % (config.tor_proxy, err))
                 self.enabled = False
                 # Change to self-bundled Tor ports
-                from lib.PySocks import socks
                 self.port = 49051
                 self.proxy_port = 49050
                 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", self.proxy_port)

@@ -1,6 +1,11 @@
 import socket
+import logging
 
-from lib.PySocks import socks
+try:
+    import socks
+except ImportError:
+    logging.info("No system PySocks, importing bundled")
+    from lib.PySocks import socks
 from Config import config
 
 def create_connection(address, timeout=None, source_address=None):
